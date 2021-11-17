@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<title>ajax 실습 2</title>
+	
+	<script type="text/javascript">
+	var xhr = new XMLHttpRequest();
+	
+	function sendData(){
+		var table = document.getElementById("ajaxTable");
+		table.innerHTML = ""; //기존 데이터를 지우기
+		
+		xhr.onreadystatechange = function(){
+			//onreadystatechange : readyState 속성이 변경 상태를 감지하여 호출될 함수를 정의
+			//readyState 상태값은 
+			//0: 요청이 초기화되지 않음         1: 서버 연결(loading) 2: 요청 받음(loaded)
+			//3: 요청 처리(interactive) 4: 요청 완료와 응답 준비(complete)
+			
+			//status : 요청의 상태 번호 반환
+			//200: "OK"  403: "Forbidden"  404: "Not Found"
+			if(this.readyState == 4 && this.status == 200){	
+				//서버에게 반환한 결과 값(json 포맷)을 받아 json 변수에 저장
+				var json = this.responseText;  
+				
+				// JSON 형식의 문자열을 자바스크립트 객체로 변환함.
+				var list = JSON.parse(json);  
+
+				for(var i=0 in list){ //데이터 넣을 테이블 을 만들며 데이터 출력
+					var row = table.insertRow(0);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					var cell3 = row.insertCell(2);
+					
+					cell1.innerHTML = list[i].id;
+					cell2.innerHTML = list[i].name;
+					cell3.innerHTML = list[i].pwd;
+				}
+			}	
+		};
+		//요청정보 설정 open(method, url, sync, [user, pwd]);
+		xhr.open("POST", "list", true);
+		xhr.send();
+	}
+	</script>
+	
+</head>
+<body>
+	<div class="container">
+	<form name="myForm" method="post">
+		<input type="button" name="myname" onclick="sendData()" value="XmlHttpRequest Send">
+	</form>
+	<br><br>
+	
+	<table class="table" style="text-align:center; border:1px solid #dddddd">
+			<tr>
+				<th style="background-color:#fafafa; text-align:center">id</th>
+				<th style="background-color:#fafafa; text-align:center">name</th>
+				<th style="background-color:#fafafa; text-align:center">pwd</th>
+			</tr>
+		<tbody id ="ajaxTable">
+
+		</tbody>
+	</table>
+	</div>
+</body>
+</html>
